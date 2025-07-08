@@ -1,0 +1,60 @@
+import User from "../Models/user.js";
+import Message from "../Models/message.js";
+import cloudnary from "../Lib/cloudnary.js";
+
+export const usersForSideBar = async (req, res) => {
+    try {
+        const loggedUserId = req.user._id;
+        const filteredUsers = await User.find({ _id: { $ne: loggedUserId } }).select("-password");
+        res.status(200).json(filteredUsers);
+    } catch (e) {
+        console.log("Error in Fetching Users ", e.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+export const getMessages = async (req, res) => {
+    const myId = req.user._id;
+    const { id: chatUserId } = req.params;
+    try {
+        const messages = Message.find({
+            $or: [
+                { senderId: myId, reciverId: chatUserId },
+                { senderId: chatUserId, reciverId: myId },
+            ]
+        });
+
+        res.status(200).json(messages);
+    } catch (e) {
+        console.log("Error in Finding Messages ", e.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+
+export const sendMessage = async (req, res) => {
+
+    const { text, image } = req.body;
+    const myId = req.user._id;
+    const { id: reciverId } = req.params;
+    let imageUrl;
+    try {
+        if (image) {
+            const uploadResponse = await cloudnary.uploader.upload(profileImg);
+            imageUrl = uploadResponse.secure_url;
+        }
+
+        const newMessage = new Message({
+            senderId: myId,
+            reciverId: reciverId,
+            text: text,
+            image: imageUrl
+        });
+
+        await newMessage.save();
+        // TODO: implement socket.io for realtime use
+        res.status(200).json(newMessage);
+    } catch (e) {
+        console.log("Error in Sending Message ", e.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+}
