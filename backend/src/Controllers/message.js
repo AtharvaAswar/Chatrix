@@ -17,12 +17,12 @@ export const getMessages = async (req, res) => {
     const myId = req.user._id;
     const { id: chatUserId } = req.params;
     try {
-        const messages = Message.find({
+        const messages = await Message.find({
             $or: [
                 { senderId: myId, reciverId: chatUserId },
                 { senderId: chatUserId, reciverId: myId },
             ]
-        });
+        }) // optional: sort by oldest -> newest
 
         res.status(200).json(messages);
     } catch (e) {
@@ -32,14 +32,14 @@ export const getMessages = async (req, res) => {
 }
 
 export const sendMessage = async (req, res) => {
-
+    console.log("OK");
     const { text, image } = req.body;
     const myId = req.user._id;
     const { id: reciverId } = req.params;
     let imageUrl;
     try {
         if (image) {
-            const uploadResponse = await cloudnary.uploader.upload(profileImg);
+            const uploadResponse = await cloudnary.uploader.upload(image);
             imageUrl = uploadResponse.secure_url;
         }
 
