@@ -34,6 +34,13 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 
+app._router.stack
+    .filter((r) => r.route)
+    .forEach((r) => {
+        const methods = Object.keys(r.route.methods).join(',').toUpperCase();
+        console.log(`${methods} ${r.route.path}`);
+    });
+
 server.listen(port, () => {
     console.log("Server is running on port: " + port);
     connectDb();
