@@ -29,17 +29,10 @@ if (process.env.NODE_ENV === "production") {
     const frontendPath = path.resolve(__dirname, "../../frontend/dist");
     app.use(express.static(frontendPath));
 
-    app.get("*", (req, res) => {
+    app.get("/{*any}", (req, res) => {
         res.sendFile(path.join(frontendPath, "index.html"));
     });
 }
-
-app._router.stack
-    .filter((r) => r.route)
-    .forEach((r) => {
-        const methods = Object.keys(r.route.methods).join(',').toUpperCase();
-        console.log(`${methods} ${r.route.path}`);
-    });
 
 server.listen(port, () => {
     console.log("Server is running on port: " + port);
