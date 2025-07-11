@@ -6,12 +6,14 @@ import path from "path";
 
 import authRoutes from "./Routes/auth.js";
 import messageRoutes from "./Routes/message.js";
+import { fileURLToPath } from "url";
 import { connectDb } from "./Lib/db.js";
 import { app, server } from "./Lib/socket.js";
 
 dotenv.config();
 const port = process.env.PORT;
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.json({ limit: "15mb" }));
 app.use(cookieParser());
