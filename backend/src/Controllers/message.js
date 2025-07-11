@@ -1,6 +1,7 @@
 import User from "../Models/user.js";
 import Message from "../Models/message.js";
 import cloudnary from "../Lib/cloudnary.js";
+import { getReceiverSocketId, io } from "../Lib/socket.js";
 
 export const usersForSideBar = async (req, res) => {
     try {
@@ -51,7 +52,13 @@ export const sendMessage = async (req, res) => {
         });
 
         await newMessage.save();
+
         // TODO: implement socket.io for realtime use
+        const receiverSocketId = getReceiverSocketId(reciverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
+
         res.status(200).json(newMessage);
     } catch (e) {
         console.log("Error in Sending Message ", e.message);

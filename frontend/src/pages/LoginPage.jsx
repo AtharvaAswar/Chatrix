@@ -43,8 +43,8 @@ const LoginPage = () => {
                 <span className="label-text font-medium">Email</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-base-content/40" />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-20">
+                  <Mail className="h-5 w-5 text-inherit" />
                 </div>
                 <input
                   type="email"
@@ -61,8 +61,8 @@ const LoginPage = () => {
                 <span className="label-text font-medium">Password</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-base-content/40" />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-20">
+                  <Lock className="h-5 w-5 text-inherit" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -73,13 +73,13 @@ const LoginPage = () => {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center z-20 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-base-content/40" />
+                    <EyeOff className="h-5 w-5 text-inherit" />
                   ) : (
-                    <Eye className="h-5 w-5 text-base-content/40" />
+                    <Eye className="h-5 w-5 text-inherit" />
                   )}
                 </button>
               </div>

@@ -8,9 +8,22 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton"
 
 const ChatContainer = () => {
-    const { messages, getMessages, isMessageLoading, selectedUser } = useChatStore();
+    const { messages, getMessages, isMessageLoading, selectedUser, subscribeToMessages, unSubscribeToMessages } = useChatStore();
     const { authUser } = useAuthStore();
-    useEffect(() => { getMessages(selectedUser._id) }, [selectedUser._id, getMessages]);
+    const messageEndRef = useRef(null);
+
+    useEffect(() => {
+        getMessages(selectedUser._id);
+        subscribeToMessages();
+
+        return () => unSubscribeToMessages();
+    }, [selectedUser._id, getMessages, subscribeToMessages, unSubscribeToMessages]);
+
+    useEffect(() => {
+        if (messageEndRef.current && messages) {
+            messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
 
     if (isMessageLoading) {
         return (
@@ -30,14 +43,15 @@ const ChatContainer = () => {
                     <div
                         key={message._id}
                         className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+                        ref={messageEndRef}
                     >
                         <div className=" chat-image avatar">
                             <div className="size-10 rounded-full border">
                                 <img
                                     src={
                                         message.senderId === authUser._id
-                                            ? authUser.profilePic || "/avatar.png"
-                                            : selectedUser.profilePic || "/avatar.png"
+                                            ? authUser.profileImg || "/avatar.png"
+                                            : selectedUser.profileImg || "/avatar.png"
                                     }
                                     alt="profile pic"
                                 />
